@@ -1,51 +1,85 @@
+#!/usr/bin/python
 import random
+import os
 
-print "You will fight a Goblin"
-player = 10
-pmax = 2
+print "You will fight a Robber"
+player = 15
+pmax = 6
 pmin = 1
-pdef = 0
+pdef = 2
 pagi = 20
-pacc = 1
-pcrit = 1
+pacc = 30
+pcrit = 20
 
 
 
 
-monster = 5
-emax = 2
+monster = 15
+emax = 5
 emin = 1
-edef = 0
-eagi = 15
-eacc = 5
-ecrit = 1
+edef = 2
+eagi = 45
+eacc = 10
+ecrit = 20
 
 raw_input("\nPress enter to continue.")
 
 while (player > 0 and monster > 0):
-    if random.randrange(pacc,100+1) > eagi:
-        print "You landed a hit!"
-        monster -= random.randrange(pmin,pmax+1)
+    print "\nMonster health: ", monster
+    print "Your Health: ", player
+    raw_input('\nPress enter to continue: ')
+    os.system('clear')
+
+    dmg = 0
+    roll = random.randrange(pacc,101)
+    print "Your roll: ", roll
+    if roll >= (101-pcrit):
+        dmg = pmax+random.randrange(pmin,pmax+1)-edef
+        if dmg < 0:
+            dmg =0
+        print "You landed a crit! Dealing %i damage." % (dmg)
+        monster -= dmg
+    elif roll > eagi:
+        dmg = random.randrange(pmin,pmax+1) - edef
+        if dmg < 0:
+            dmg = 0
+        print "You landed a hit! Dealing %i damage." % (dmg)
+        monster -= dmg
     else:
-        print "You missed!"
-    raw_input("\nPress enter to continue.")
+            print "You missed!"
+
     if monster <= 0:
-        print "Enemy has died."
+        print "Enemy has died. Congratz your a winner!"
         break
-    if random.randrange(eacc,100+1) > pagi:
-        print "Enemy landed a hit!"
-        player -= random.randrange(emin,emax+1)
+
+    dmg =0
+    roll = random.randrange(eacc,101)
+    print "Monster roll: ", roll
+    if roll >= (101-ecrit):
+        dmg = emax+random.randrange(emin,emax+1)-pdef
+        if dmg < 0:
+            dmg =0
+        print "Enemy landed a crit! Dealing %i damage" % (dmg)
+        player -= dmg
+    elif roll > pagi:
+        dmg = random.randrange(emin,emax+1)-pdef
+        if dmg < 0:
+            dmg =0
+        print "Enemy landed a hit! Dealing %i damage" % (dmg)
+        player -= dmg
     else:
         print "Enemy missed!"
-    raw_input("\nPress enter to continue.")
+
+
     if player <=0:
         print "Oh dear you have died."
+
         break
 
-    print "Monster health: ", monster
-    print "\nYour Health: ", player
+    raw_input('Press enter to continue: ')
+    os.system('clear')
 
 
-print "Congratz your a winner!"
+print "Your final hp: ", player
 
 raw_input("\n\nPress enter to exit.")
