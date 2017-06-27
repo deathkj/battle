@@ -1,6 +1,10 @@
 #!/usr/bin/python
 import random
 import os
+import beastiary
+import lootdie
+
+
 
 def attack(dict1,dict2):
     alive = 1
@@ -26,13 +30,14 @@ def attack(dict1,dict2):
     return alive
 
 
-print "You will fight a Robber"
 
 player = {'name':'You','hp':15,'max':6,'min':1,'def':2,'agi':20,'acc':30,'crit':20}
-monster = {'name':'Robber','hp':15,'max':5,'min':1,'def':2,'agi':45,'acc':10,'crit':20}
 
-
+id = raw_input('Enter beast code: ')
+monster = beastiary.beast(id)
+print "You will fight a %s" % (monster['name'])
 raw_input("\nPress enter to continue.")
+
 alive = 1
 while (alive == 1):
     print "\n%s health: %i" % (monster['name'],monster['hp'])
@@ -51,7 +56,6 @@ while (alive == 1):
             break
         alive = attack(player, monster)
 
-
     raw_input('Press enter to continue: ')
     os.system('clear')
 
@@ -59,7 +63,14 @@ if monster['hp'] <= 0:
     print "Enemy has died. Congratz your a winner!"
 if player['hp'] <= 0:
     print "Oh dear you have died."
-
 print "Your final hp: ", player['hp']
+raw_input('\nPress enter to continue: ')
+
+lootdie.loot(monster['name'])
+
+os.system('rm beastiary.pyc')
+os.system('rm lootdie.pyc')
+
+
 
 raw_input("\n\nPress enter to exit.")
