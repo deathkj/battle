@@ -2,84 +2,64 @@
 import random
 import os
 
+def attack(dict1,dict2):
+    alive = 1
+    dmg = 0
+    roll = random.randrange(dict1['acc'], 101)
+    print "%s roll: " % (dict1['name']), roll
+    if roll >= (101 - dict1['crit']):
+        dmg = dict1['max'] + random.randrange(dict1['min'], dict1['max'] + 1) - dict2['def']
+        if dmg < 0:
+            dmg = 0
+        print "%s landed a crit! Dealing %i damage." % (dict1['name'],dmg)
+        dict2['hp'] -= dmg
+    elif roll > dict2['agi']:
+        dmg = random.randrange(dict1['min'], dict1['max'] + 1) - dict2['def']
+        if dmg < 0:
+            dmg = 0
+        print "%s landed a hit! Dealing %i damage." % (dict1['name'],dmg)
+        dict2['hp'] -= dmg
+    else:
+        print "%s missed!" % (dict1['name'])
+    if dict2['hp'] <= 0:
+        alive = 2
+    return alive
+
+
 print "You will fight a Robber"
-player = 15
-pmax = 6
-pmin = 1
-pdef = 2
-pagi = 20
-pacc = 30
-pcrit = 20
 
+player = {'name':'You','hp':15,'max':6,'min':1,'def':2,'agi':20,'acc':30,'crit':20}
+monster = {'name':'Robber','hp':15,'max':5,'min':1,'def':2,'agi':45,'acc':10,'crit':20}
 
-
-
-monster = 15
-emax = 5
-emin = 1
-edef = 2
-eagi = 45
-eacc = 10
-ecrit = 20
 
 raw_input("\nPress enter to continue.")
-
-while (player > 0 and monster > 0):
-    print "\nMonster health: ", monster
-    print "Your Health: ", player
+alive = 1
+while (alive == 1):
+    print "\n%s health: %i" % (monster['name'],monster['hp'])
+    print "Your Health: ", player['hp']
     raw_input('\nPress enter to continue: ')
     os.system('clear')
 
-    dmg = 0
-    roll = random.randrange(pacc,101)
-    print "Your roll: ", roll
-    if roll >= (101-pcrit):
-        dmg = pmax+random.randrange(pmin,pmax+1)-edef
-        if dmg < 0:
-            dmg =0
-        print "You landed a crit! Dealing %i damage." % (dmg)
-        monster -= dmg
-    elif roll > eagi:
-        dmg = random.randrange(pmin,pmax+1) - edef
-        if dmg < 0:
-            dmg = 0
-        print "You landed a hit! Dealing %i damage." % (dmg)
-        monster -= dmg
+    if player['agi'] >= monster['agi']:
+        alive = attack(player, monster)
+        if alive == 2:
+            break
+        alive = attack(monster, player)
     else:
-            print "You missed!"
+        alive = attack(monster, player)
+        if alive == 2:
+            break
+        alive = attack(player, monster)
 
-    if monster <= 0:
-        print "Enemy has died. Congratz your a winner!"
-        break
-
-    dmg =0
-    roll = random.randrange(eacc,101)
-    print "Monster roll: ", roll
-    if roll >= (101-ecrit):
-        dmg = emax+random.randrange(emin,emax+1)-pdef
-        if dmg < 0:
-            dmg =0
-        print "Enemy landed a crit! Dealing %i damage" % (dmg)
-        player -= dmg
-    elif roll > pagi:
-        dmg = random.randrange(emin,emax+1)-pdef
-        if dmg < 0:
-            dmg =0
-        print "Enemy landed a hit! Dealing %i damage" % (dmg)
-        player -= dmg
-    else:
-        print "Enemy missed!"
-
-
-    if player <=0:
-        print "Oh dear you have died."
-
-        break
 
     raw_input('Press enter to continue: ')
     os.system('clear')
 
+if monster['hp'] <= 0:
+    print "Enemy has died. Congratz your a winner!"
+if player['hp'] <= 0:
+    print "Oh dear you have died."
 
-print "Your final hp: ", player
+print "Your final hp: ", player['hp']
 
 raw_input("\n\nPress enter to exit.")
